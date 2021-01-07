@@ -511,6 +511,8 @@ public:
       // This defines either MIN_SIZE, or MAX_SIZE, but not both:
       gtk_window_set_geometry_hints(GTK_WINDOW(m_window), nullptr, &g, h);
     }
+    objc_msgSend(m_window, "center"_sel);
+    objc_msgSend(m_window, "setHasShadow:"_sel, 1);
   }
 
   void navigate(const std::string url) {
@@ -567,6 +569,24 @@ using browser_engine = gtk_webkit_engine;
 #define NSApplicationActivationPolicyRegular 0
 
 #define WKUserScriptInjectionTimeAtDocumentStart 0
+
+typedef struct NSPoint
+{
+  CGFloat x;
+  CGFloat y;
+} NSPoint;
+
+typedef struct NSSize
+{
+  CGFloat width;
+  CGFloat height;
+} NSSize;
+
+typedef struct NSRect
+{
+  NSPoint origin;
+  NSSize size;
+} NSRect;
 
 namespace webview {
 
@@ -689,10 +709,10 @@ public:
       objc_msgSend(m_window, "setContentMaxSize:"_sel,
                    CGSizeMake(width, height));
     } else {
+      NSRect rect = ((NSRect(*)(id, SEL))objc_msgSend_stret)(m_window, "frame"_sel);
       objc_msgSend(m_window, "setFrame:display:animate:"_sel,
-                   CGRectMake(0, 0, width, height), 1, 0);
+                   CGRectMake(rect.origin.x, rect.origin.y, width, height), 1, 0);
     }
-    objc_msgSend(m_window, "center"_sel);
   }
   void navigate(const std::string url) {
     auto nsurl = objc_msgSend(
