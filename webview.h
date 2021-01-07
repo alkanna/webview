@@ -511,8 +511,6 @@ public:
       // This defines either MIN_SIZE, or MAX_SIZE, but not both:
       gtk_window_set_geometry_hints(GTK_WINDOW(m_window), nullptr, &g, h);
     }
-    objc_msgSend(m_window, "center"_sel);
-    objc_msgSend(m_window, "setHasShadow:"_sel, 1);
   }
 
   void navigate(const std::string url) {
@@ -713,6 +711,8 @@ public:
       objc_msgSend(m_window, "setFrame:display:animate:"_sel,
                    CGRectMake(rect.origin.x, rect.origin.y, width, height), 1, 0);
     }
+    objc_msgSend(m_window, "setHasShadow:"_sel, 1);
+    objc_msgSend(m_window, "center"_sel);
   }
   void navigate(const std::string url) {
     auto nsurl = objc_msgSend(
